@@ -36,7 +36,7 @@ eg:
     - name: Install python
       hosts: localhost
       sudo: yes
-      - role: natbusa.python
+      - role: natbusa.centos-python
         pyfsrc_version: 3.5.2
         pyfsrc_make_default: yes
         pyfsrc_ssl_support: yes
