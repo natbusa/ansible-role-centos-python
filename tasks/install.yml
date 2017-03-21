@@ -21,7 +21,7 @@
     dest: "{{ pyfsrc_src_dir_path }}/Modules/Setup.dist"
     regexp: '^#SSL.*$'
     line: '_ssl _ssl.c -DUSE_SSL -I/usr/include -I/usr/include/openssl -L/usr/lib64/lib -lssl -lcrypto'
-  when: pyfsrc_ssl_support==yes
+  when: pyfsrc_ssl_support
 
 - name: Run configure
   command: ./configure --enable-loadable-sqlite-extensions
@@ -55,16 +55,16 @@
     - unzip
     - sqlite
     - sqlite-devel
-  when: pyfsrc_install_pip==yes
+  when: pyfsrc_install_pip
 
 - name: Download get-pip
   get_url: url="https://bootstrap.pypa.io/get-pip.py" dest="{{ pyfsrc_download_dir }}"
-  when: pyfsrc_install_pip==yes
+  when: pyfsrc_install_pip
 
 - name: Install pip and setup-tools
   command: /usr/local/bin/{{ pyfsrc_exec }} {{ pyfsrc_download_dir }}/get-pip.py
   register: cmd_pip_result
-  when: pyfsrc_install_pip==yes
+  when: pyfsrc_install_pip
 
 - name: Clean up the source files
   command: rm -r "{{ item }}"

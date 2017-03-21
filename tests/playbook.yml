@@ -3,8 +3,8 @@
 - hosts: centos7
 
 - role: natbusa.python
-      pyfsrc_version: 3.5.2
-      pyfsrc_make_default: yes
-      pyfsrc_ssl_support: yes
-      pyfsrc_install_pip: yes
+    pyfsrc_version: 3.5.2
+    pyfsrc_make_default: yes
+    pyfsrc_ssl_support: yes
+    pyfsrc_install_pip: yes
 
