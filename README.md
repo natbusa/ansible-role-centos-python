@@ -1,7 +1,7 @@
 Python
 ===============
 
-Adapted from [python-from-source] [] by Vineet Naik <naikvin@gmail.com> Ansible role for installing a particular version of Python from
+Adapted from [python-from-source](https://github.com/naiquevin/python-from-src) by Vineet Naik <naikvin@gmail.com>. Ansible role for installing a particular version of Python from
 source.
 
 Requirements
@@ -59,3 +59,4 @@ Author Information
 ------------------
 
 Vineet Naik <naikvin@gmail.com>
+Natalino Busa <natalino.busa@gmail.com>
