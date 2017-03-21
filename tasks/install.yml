@@ -16,6 +16,15 @@
 - name: install gcc
   yum: name=gcc state=present
 
+- name: make sure necessary yum packages are installed
+  yum: name={{item}} state=present update_cache=yes
+  with_items:
+    - zlib
+    - zlib-devel
+    - unzip
+    - sqlite
+    - sqlite-devel
+
 - name: Setup.dist - enable ssl python module 
   lineinfile:
     dest: "{{ pyfsrc_src_dir_path }}/Modules/Setup.dist"
@@ -46,16 +55,6 @@
     chdir: "{{ pyfsrc_src_dir_path }}"
   when: not pyfsrc_make_default
   sudo: yes
-
-- name: make sure necessary yum packages are installed
-  yum: name={{item}} state=present update_cache=yes
-  with_items:
-    - zlib
-    - zlib-devel
-    - unzip
-    - sqlite
-    - sqlite-devel
-  when: pyfsrc_install_pip
 
 - name: Download get-pip
   get_url: url="https://bootstrap.pypa.io/get-pip.py" dest="{{ pyfsrc_download_dir }}"
