@@ -6,7 +6,7 @@
   with_items:
     - openssl
     - openssl-devel
-  when: pyfsrc_ssl_support==yes
+  when: pyfsrc_ssl_support
 
 - set_fact:
     pyfsrc_exec: "python{{ pyfsrc_version|regex_replace('(\\d+\\.\\d+)\\..*$', '\\1') }}"
