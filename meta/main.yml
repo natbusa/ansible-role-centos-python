@@ -10,5 +10,5 @@ galaxy_info:
     - name: EL
       versions:
       - all
-  categories:
+  galaxy_tags:
     - development
