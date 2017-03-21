@@ -1,0 +1,80 @@
+---
+
+- name: Download the tar ball
+  get_url: url="{{ pyfsrc_download_url }}" dest="{{ pyfsrc_src_pkg_path }}"
+
+- name: Untar the source package
+  unarchive:
+    src: "{{ pyfsrc_src_pkg_path }}"
+    dest: "{{ pyfsrc_download_dir }}"
+    creates: "{{ pyfsrc_src_dir_path }}"
+    copy: no
+
+- name: install yum-utils
+  yum: name=yum-utils state=present update_cache=yes
+
+- name: install gcc
+  yum: name=gcc state=present
+
+- name: Setup.dist - enable ssl python module 
+  lineinfile:
+    dest: "{{ pyfsrc_src_dir_path }}/Modules/Setup.dist"
+    regexp: '^#SSL.*$'
+    line: '_ssl _ssl.c -DUSE_SSL -I/usr/include -I/usr/include/openssl -L/usr/lib64/lib -lssl -lcrypto'
+  when: pyfsrc_ssl_support==yes
+
+- name: Run configure
+  command: ./configure --enable-loadable-sqlite-extensions
+  args:
+    chdir: "{{ pyfsrc_src_dir_path }}"
+
+- name: Run make
+  command: make
+  args:
+    chdir: "{{ pyfsrc_src_dir_path }}"
+
+- name: Run make install
+  command: make install
+  args:
+    chdir: "{{ pyfsrc_src_dir_path }}"
+  when: pyfsrc_make_default
+  sudo: yes
+
+- name: Run make altinstall
+  command: make altinstall
+  args:
+    chdir: "{{ pyfsrc_src_dir_path }}"
+  when: not pyfsrc_make_default
+  sudo: yes
+
+- name: make sure necessary yum packages are installed
+  yum: name={{item}} state=present update_cache=yes
+  with_items:
+    - zlib
+    - zlib-devel
+    - unzip
+    - sqlite
+    - sqlite-devel
+  when: pyfsrc_install_pip==yes
+
+- name: Download get-pip
+  get_url: url="https://bootstrap.pypa.io/get-pip.py" dest="{{ pyfsrc_download_dir }}"
+  when: pyfsrc_install_pip==yes
+
+- name: Install pip and setup-tools
+  command: /usr/local/bin/{{ pyfsrc_exec }} {{ pyfsrc_download_dir }}/get-pip.py
+  register: cmd_pip_result
+  when: pyfsrc_install_pip==yes
+
+- name: Clean up the source files
+  command: rm -r "{{ item }}"
+  with_items:
+    - "{{ pyfsrc_src_pkg_path }}"
+    - "{{ pyfsrc_src_dir_path }}"
+  when: pyfsrc_cleanup_downloads
+
+- name: add /usr/local/bin to sudo default_path
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^Default.*secure_path.*$'
+    line: 'Defaults    secure_path = /usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin'

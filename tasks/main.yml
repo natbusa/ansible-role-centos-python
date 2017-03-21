@@ -1,0 +1,19 @@
+---
+# tasks file for python-from-src
+
+- name: make sure necessary yum packages are installed
+  yum: name={{item}} state=present update_cache=yes
+  with_items:
+    - openssl
+    - openssl-devel
+  when: pyfsrc_ssl_support==yes
+
+- set_fact:
+    pyfsrc_exec: "python{{ pyfsrc_version|regex_replace('(\\d+\\.\\d+)\\..*$', '\\1') }}"
+
+- name: check if python version installed
+  stat: path=/usr/local/bin/{{ pyfsrc_exec }}
+  register: cmd_result
+
+- include: install.yml
+  when: pyfsrc_force_install or cmd_result.stat.exists == False
