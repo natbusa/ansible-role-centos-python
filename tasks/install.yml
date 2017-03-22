@@ -72,8 +72,8 @@
     - "{{ pyfsrc_src_dir_path }}"
   when: pyfsrc_cleanup_downloads
 
-#- name: add /usr/local/bin to sudo default_path
-#  lineinfile:
-#    dest: /etc/sudoers
-#    regexp: '^Default.*secure_path.*$'
-#    line: 'Defaults    secure_path = /usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin'
+- name: add /usr/local/bin to sudo default_path
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^Default.*secure_path.*$'
+    line: 'Defaults    secure_path = /usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin'
